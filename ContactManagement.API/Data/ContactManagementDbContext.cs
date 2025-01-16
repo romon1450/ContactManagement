@@ -20,8 +20,8 @@ public class ContactManagementDbContext : DbContext
         modelBuilder.Entity<Contact>().HasData(
             new Contact
             {
-                Id = Guid.NewGuid(),
-                BirthDate = new DateTime(2000, 1, 1),
+                Id = Guid.Parse("a77bdc67-e4d3-4928-a5bd-f51a95a6b878"),
+                BirthDate = DateTime.Parse("01/01/2000"),
                 Email = "johndoe@example.com",
                 FirstName = "John",
                 LastName = "Doe",
@@ -29,8 +29,8 @@ public class ContactManagementDbContext : DbContext
             },
             new Contact
             {
-                Id = Guid.NewGuid(),
-                BirthDate = new DateTime(1990, 12, 31),
+                Id = Guid.Parse("71eb7f9b-9d1c-4238-8f88-853d10673e4c"),
+                BirthDate = DateTime.Parse("12/31/1990"),
                 Email = "janesmith@example.com",
                 FirstName = "Jane",
                 LastName = "Smith",
