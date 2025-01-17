@@ -1,7 +1,7 @@
-﻿using ContactManagement.API.Data;
-using ContactManagement.API.Data.Models;
+﻿using ContactManagement.API.Features.Contacts.Commands;
+using ContactManagement.API.Features.Contacts.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ContactManagement.API.Controllers
 {
@@ -9,24 +9,24 @@ namespace ContactManagement.API.Controllers
     [ApiController]
     public class ContactsController : ControllerBase
     {
-        private readonly ContactManagementDbContext _context;
+        private readonly IMediator _mediator;
 
-        public ContactsController(ContactManagementDbContext context)
+        public ContactsController(IMediator mediator)
         {
-            _context = context;
+            _mediator = mediator;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Contact>>> GetAllContactsAsync()
+        public async Task<ActionResult<IEnumerable<GetAllContactsQueryResult>>> GetAllContacts()
         {
-            var contacts = await _context.Contacts.ToListAsync();
+            var contacts = await _mediator.Send(new GetAllContactsQuery());
             return Ok(contacts);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Contact>> GetContactByIdAsync(Guid id)
+        public async Task<ActionResult<GetContactByIdQueryResult>> GetContactById(Guid id)
         {
-            var contact = await _context.Contacts.FindAsync(id);
+            var contact = await _mediator.Send(new GetContactByIdQuery(id));
             if (contact == null)
             {
                 return NotFound();
@@ -36,51 +36,23 @@ namespace ContactManagement.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Contact>> AddContactAsync(Contact contact)
+        public async Task<IActionResult> AddContact(AddContactCommand command)
         {
-            if (contact == null)
-            {
-                return BadRequest();
-            }
-
-            _context.Contacts.Add(contact);
-            await _context.SaveChangesAsync();
-
+            await _mediator.Send(command);
             return Created();
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateContactAsync(Guid id, Contact updatedContact)
+        public async Task<IActionResult> UpdateContact(Guid id, UpdateContactCommand command)
         {
-            var contact = await _context.Contacts.FindAsync(id);
-            if (contact == null)
-            {
-                return NotFound();
-            }
-
-            contact.BirthDate = updatedContact.BirthDate;
-            contact.Email = updatedContact.Email;
-            contact.FirstName = updatedContact.FirstName;
-            contact.LastName = updatedContact.LastName;
-            contact.PhoneNumber = updatedContact.PhoneNumber;
-
-            await _context.SaveChangesAsync();
-
+            await _mediator.Send(command);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteContactAsync(Guid id)
+        public async Task<IActionResult> DeleteContact(Guid id)
         {
-            var contact = await _context.Contacts.FindAsync(id);
-            if (contact == null)
-            {
-                return NotFound();
-            }
-
-            _context.Contacts.Remove(contact);
-            await _context.SaveChangesAsync();
-
+            await _mediator.Send(new DeleteContactCommand(id));
             return NoContent();
         }
     }
