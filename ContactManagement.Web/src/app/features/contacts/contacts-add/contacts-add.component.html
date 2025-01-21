@@ -1,0 +1,30 @@
+<h1 class="title">New Contact</h1>
+<div class="contact-form">
+    <mat-form-field>
+        <mat-label>First Name</mat-label>
+        <input matInput [(ngModel)]="contact.firstName">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Last Name</mat-label>
+        <input matInput [(ngModel)]="contact.lastName">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Email</mat-label>
+        <input matInput [(ngModel)]="contact.email">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Phone Number</mat-label>
+        <input matInput [(ngModel)]="contact.phoneNumber">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Date of Birth</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="contact.birthDate">
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <div class="form-buttons">
+        <button mat-raised-button (click)="navigateToContacts()">Cancel</button>
+        <button mat-raised-button (click)="addContact()">Add</button>
+    </div>
+</div>

@@ -6,10 +6,20 @@ using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+var allowAllOrigins = "AllowAll";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: allowAllOrigins,
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+});
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 var dbConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -21,7 +31,8 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Pro
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseCors(allowAllOrigins);
+
 if (app.Environment.IsDevelopment())
 {
     app.MapScalarApiReference();
@@ -29,9 +40,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
