@@ -8,6 +8,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { ContactService } from '../contact.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDeleteModalComponent } from '../confirm-delete-modal/confirm-delete-modal.component';
 
 @Component({
   selector: 'app-contacts-edit',
@@ -20,7 +22,8 @@ export class ContactsEditComponent implements OnInit {
   id: string;
   contact: any;
 
-  constructor(private route: ActivatedRoute, 
+  constructor(private route: ActivatedRoute,
+    private dialog: MatDialog, 
     private router: Router,
     private contactService: ContactService) {
     this.id = this.route.snapshot.paramMap.get('id') ?? '';
@@ -35,7 +38,15 @@ export class ContactsEditComponent implements OnInit {
   }
 
   deleteContact() {
-    this.contactService.deleteContact(this.id).subscribe(res => this.navigateToContacts());
+    const dialogRef = this.dialog.open(ConfirmDeleteModalComponent, {
+      data: {name: `${this.contact.firstName} ${this.contact.lastName}`},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.contactService.deleteContact(this.id).subscribe(res => this.navigateToContacts());
+      }
+    });
   }
 
   navigateToContacts() {
