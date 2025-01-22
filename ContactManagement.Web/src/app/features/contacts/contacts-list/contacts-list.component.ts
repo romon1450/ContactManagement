@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-contacts-list',
@@ -18,7 +18,7 @@ export class ContactsListComponent implements OnInit {
   displayedColumns: string[] = ['firstName', 'lastName', 'email', 'phoneNumber', 'birthDate'];
   isLoading: boolean = false;
 
-  constructor(private contactService: ContactService) { }
+  constructor(private router: Router, private contactService: ContactService) { }
 
   ngOnInit() {
     this.isLoading = true;
@@ -26,5 +26,9 @@ export class ContactsListComponent implements OnInit {
       this.contacts = res;
       this.isLoading = false;
     });
+  }
+
+  navigateToEdit(id: string) {
+    this.router.navigate([`/contacts/edit/${id}`]);
   }
 }

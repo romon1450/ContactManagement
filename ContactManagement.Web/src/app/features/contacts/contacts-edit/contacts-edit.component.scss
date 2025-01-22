@@ -1,0 +1,21 @@
+.title {
+    text-align: center;
+}
+
+.contact-form {
+    width: 500px;
+    display: flex;
+    justify-self: center;
+    flex-direction: column;
+}
+
+.form-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.second-form-button-group {
+    display: flex;
+    gap: 10px;
+}
